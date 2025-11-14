@@ -74,7 +74,7 @@ class SpawnerMarathoner : Listener, MyKoinComponent {
         minecart.remove()
         minecart.world.playSound(Sound.sound {
             it.type(Key.key("block.spawner.break"))
-        }, minecart.location.x, minecart.location.y, minecart.location.z)
+        }, minecart)
     }
 
     private fun isValidPlaceLocation(location: Location): Boolean {
@@ -82,7 +82,7 @@ class SpawnerMarathoner : Listener, MyKoinComponent {
     }
 
     // Places the spawner back down on the ground.
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     fun VehicleDestroyEvent.onSpawnerMinecartDestroy() {
         val spawnerMinecart = this.vehicle as? SpawnerMinecart ?: return
         val originalRPR = spawnerMinecart.persistentDataContainer.get(ORIGINAL_RPR_KEY, PersistentDataType.INTEGER)
@@ -105,13 +105,13 @@ class SpawnerMarathoner : Listener, MyKoinComponent {
         spawnerMinecart.customName(nameComponent)
         spawnerMinecart.world.playSound(Sound.sound {
             it.type(Key.key("block.spawner.place"))
-        }, spawnerMinecart.location.x, spawnerMinecart.location.y, spawnerMinecart.location.z)
+        }, spawnerMinecart)
     }
 
     private val confirmations = mutableMapOf<UUID, Pair<Task?, Block>>()
 
     // Shows a confirmation when breaking spawners.
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     private fun BlockBreakEvent.onBreakSpawner() {
         if (this.block.type != Material.SPAWNER) return
 
